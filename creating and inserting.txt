@@ -1,0 +1,156 @@
+USE java;
+
+** creating TABLES
+
+CREATE TABLE emp
+(
+empno INT(4) NOT NULL PRIMARY KEY DEFAULT'0',
+ename VARCHAR(10),
+job VARCHAR(9),
+mgr INT(4),
+hiredate DATE,
+sal DECIMAL(7,2),
+comm DECIMAL(7,2),
+deptno INT(2)
+);
+
+CREATE TABLE dept
+(
+deptno INT(2) NOT NULL PRIMARY KEY DEFAULT'0',
+dname VARCHAR(14),
+loc VARCHAR(13)
+);
+
+CREATE TABLE student
+(
+rno INT(2) NOT NULL PRIMARY KEY DEFAULT'0',
+sname VARCHAR(14),
+city VARCHAR(20),
+state VARCHAR(20)
+);
+
+CREATE TABLE emplog
+(
+emp_id INT(5) NOT NULL,
+log_date DATE,
+new_salary INT(10),
+ACTION VARCHAR(20)
+);
+
+**Inserting DATA
+
+INSERT INTO dept(deptno,dname,loc) VALUES("10","accounting","new york");
+INSERT INTO dept(deptno,dname,loc) VALUES("20","research","dallas");
+INSERT INTO dept(deptno,dname,loc) VALUES("30","sales","chicago");
+INSERT INTO dept(deptno,dname,loc) VALUES("40","operations","boston");
+
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7369,"smith","clerk",7902,"1980-12-17",800.00,NULL,20);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7499,"allen","salesman",7698,"1981-02-20",1600,300,30);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7521,"ward","salesman",7698,"1981-02-22",1250,500,30);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7566,"jones","manager",7839,"1981-04-02",2975,NULL,20);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7654,"martin","salesman",7698,"1981-09-28",1250,1400,30);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7698,"blake","manager",7839,"1981-05-01",2850,NULL,30);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7782,"clark","manager",7839,"1981-06-09",2450,NULL,10);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7788,"scott","analyst",7566,"1987-06-11",3000,NULL,20);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7839,"king","president",NULL,"1981-11-17",5000,NULL,10);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7844,"turner","salesman",7698,"1981-08-09",1500,0,30);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7876,"adams","clerk",7788,"1987-07-13",1100,NULL,20);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7900,"james","clerk",7698,"1981-03-12",950,NULL,30);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7902,"ford","analyst",7566,"1981-03-12",3000,NULL,20);
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(7934,"miller","clerk",7782,"1982-01-23",1300,NULL,10);
+
+
+**performing different queries.
+
+(1) Select unique job from EMP table. 
+--> SELECT DISTINCT job FROM emp;
+
+(2) List the details of the emps in asc order of the Dptnos and desc of Jobs? 
+--> SELECT * FROM emp ORDER BY deptno ASC,job DESC;
+
+(3) Display all the unique job groups in the descending order? 
+--> SELECT DISTINCT job FROM emp ORDER BY job DESC;
+
+(4) List the emps who joined before 1981.
+--> SELECT * FROM emp WHERE hiredate < ('1981-01-01');
+
+(5) List the Empno, Ename, Sal, Daily sal of all emps in the asc order of Annsal.
+--> SELECT empno,ename,sal,comm FROM emp ORDER BY sal;
+
+(6) List the Empno, Ename, Sal, Exp of all emps working for Mgr 7369. 
+--> SELECT empno,ename,sal,mgr FROM emp WHERE mgr = 7369;
+
+(7) Display all the details of the emps who’s Comm. Is more than their Sal? 
+--> SELECT * FROM emp WHERE comm > sal;
+
+(8) List the emps who are either ‘CLERK’ or ‘ANALYST’ in the Desc order.
+--> SELECT * FROM emp WHERE job='clerk' OR job='analyst' ORDER BY job DESC;
+
+(9) List the emps Who Annual sal ranging from 22000 and 45000. 
+--> SELECT * FROM emp WHERE sal*12 BETWEEN 22000 AND 45000;
+
+(10) List the Enames those are starting with ‘S’ and with five characters.
+--> SELECT * FROM emp WHERE LENGTH(ename) = 5 AND ename LIKE "s%";
+
+(11) List the emps whose Empno not starting with digit78.
+--> SELECT * FROM emp WHERE empno NOT LIKE "78%";
+
+(12) List all the Clerks of Deptno 20.
+--> SELECT * FROM emp WHERE job = "clerk" AND deptno = 20;
+
+(13) List the Emps who are senior to their own MGRS.
+--> SELECT * FROM emp WHERE hiredate < (SELECT hirdate FROM emp e2 WHERE e1.mgr=e2.`empno`);
+
+(14) List the Emps of Deptno 20 who’s Jobs are same as Deptno10. 
+--> SELECT * FROM emp WHERE deptno = 20 AND job IN(SELECT job FROM emp WHERE deptno = 10);
+
+(15) List the Emps who’s Sal is same as FORD or SMITH in desc order of Sal.
+--> SELECT * FROM emp WHERE sal IN(SELECT sal FROM emp WHERE ename = "ford" OR ename = "smith") ORDER
+    BY sal DESC;
+
+(16) List the emps whose jobs same as SMITH or ALLEN.
+--> SELECT * FROM emp WHERE job IN(SELECT job FROM emp WHERE ename="smith" OR ename="allen"); 
+
+(17) Any jobs of deptno 10 those that are not found in deptno 20. 
+--> SELECT DISTINCT job FROM emp WHERE deptno = 10 AND job NOT IN (SELECT job FROM emp WHERE deptno=
+    20);         
+
+(18) Find the highest sal of EMP table.
+--> SELECT MAX(sal) FROM emp;
+
+(19) Find details of highest paid employee. 
+--> SELECT * FROM emp WHERE sal IN(SELECT MAX(sal) FROM emp);
+
+(20) Find the total sal given to the MGR. 
+--> SELECT SUM(mgr) FROM emp;
+
+(21) List the emps whose names contains ‘A’. 
+--> SELECT * FROM emp WHERE ename LIKE "%a%";
+
+(22) Find all the emps who earn the minimum Salary for each job wise in ascending order.
+--> 
+(23) List the emps whose sal greater than Blake’s sal.
+--> SELECT * FROM emp WHERE sal > (SELECT sal FROM emp WHERE ename="blake");
+
+(24) Create view v1 to select ename, job, dname, loc whose deptno are same.
+--> CREATE VIEW v1 AS
+    SELECT emp.`ename`,emp.`job`,dept.`dname`,dept.`loc`
+    FROM emp
+    JOIN dept ON emp.`deptno`=dept.`deptno`;
+
+(25) Create a procedure with dno as input parameter to fetch ename and dname. 
+--> CREATE OR REPLACE PROCEDURE GetEmpDetails(p_deptno NUMBER) AS
+    BEGIN
+    SELECT ename, dname
+    INTO OUT_EMP_NAME, OUT_DEPT_NAME
+    FROM EMP e
+    JOIN DEPT d ON e.deptno = d.deptno
+    WHERE e.deptno = p_deptno;
+    END;
+
+(26) Add column Pin with bigint data type in table student.
+--> ALTER TABLE student ADD pin BIGINT;
+
+(27) Modify the student table to change the sname length from 14 to 40. Create trigger to insert data
+     in emp_log table whenever any update of sal in EMP table. You can set action as ‘New Salary’.
+--> ALTER TABLE student MODIFY sname VARCHAR(40);
